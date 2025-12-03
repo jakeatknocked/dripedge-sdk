@@ -9,8 +9,8 @@
 # 3. Select `read:packages` scope
 # 4. Copy the token
 
-# Registry for @dripedge scoped packages
-@dripedge:registry=https://npm.pkg.github.com
+# Registry for @jakeatknocked scoped packages
+@jakeatknocked:registry=https://npm.pkg.github.com
 
 # Authentication (replace with your token)
 //npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN

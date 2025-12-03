@@ -1,4 +1,4 @@
-# @dripedge/market-service-sdk
+# @jakeatknocked/market-service-sdk
 
 TypeScript SDK for the DripEdge Market Service API. Provides market management, cost adders, county economic data, and permit history features.
 
@@ -20,27 +20,27 @@ Create or update your `.npmrc` file:
 
 ```bash
 # In your project root
-echo "@dripedge:registry=https://npm.pkg.github.com" >> .npmrc
+echo "@jakeatknocked:registry=https://npm.pkg.github.com" >> .npmrc
 echo "//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN" >> .npmrc
 ```
 
 Or use an environment variable (recommended for CI/CD):
 
 ```bash
-echo "@dripedge:registry=https://npm.pkg.github.com" >> .npmrc
+echo "@jakeatknocked:registry=https://npm.pkg.github.com" >> .npmrc
 echo '//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}' >> .npmrc
 ```
 
 ### 2. Install the SDK
 
 ```bash
-npm install @dripedge/market-service-sdk
+npm install @jakeatknocked/market-service-sdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { MarketServiceClient } from '@dripedge/market-service-sdk';
+import { MarketServiceClient } from '@jakeatknocked/market-service-sdk';
 
 // Create client with required API key
 const client = new MarketServiceClient({
@@ -234,7 +234,7 @@ import {
   useCounties,
   useSDKStatus,
   useMarketLookup,
-} from '@dripedge/market-service-sdk';
+} from '@jakeatknocked/market-service-sdk';
 
 function App() {
   // Create memoized client
@@ -316,7 +316,7 @@ function MarketSearch({ client, brandId }) {
 The SDK throws `MarketServiceError` for all errors:
 
 ```typescript
-import { MarketServiceError } from '@dripedge/market-service-sdk';
+import { MarketServiceError } from '@jakeatknocked/market-service-sdk';
 
 try {
   const market = await client.getMarketById('invalid-id');
@@ -370,7 +370,7 @@ import type {
   SDKVersionStatus,
   FeatureAccessResult,
   MarketServiceError,
-} from '@dripedge/market-service-sdk';
+} from '@jakeatknocked/market-service-sdk';
 ```
 
 ## Environment Variables
@@ -394,4 +394,4 @@ ISC - See LICENSE file for details.
 ## Support
 
 - Issues: https://github.com/jakeatknocked/dripedge-sdk/issues
-- Email: support@dripedge.io
+- Email: support@jakeatknocked.io

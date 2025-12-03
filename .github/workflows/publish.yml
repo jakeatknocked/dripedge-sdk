@@ -71,7 +71,7 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@dripedge'
+          scope: '@jakeatknocked'
 
       - name: Install dependencies
         run: npm ci
@@ -115,7 +115,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          echo "## @dripedge/market-service-sdk@$VERSION published" >> $GITHUB_STEP_SUMMARY
+          echo "## @jakeatknocked/market-service-sdk@$VERSION published" >> $GITHUB_STEP_SUMMARY
 
   # Template for future SDKs:
   # publish-supply:

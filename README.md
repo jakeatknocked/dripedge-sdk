@@ -6,7 +6,7 @@ Official TypeScript SDKs for DripEdge services. These packages provide type-safe
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| [`@dripedge/market-service-sdk`](./market) | 1.1.0 | Market management, cost adders, county data, permit history |
+| [`@jakeatknocked/market-service-sdk`](./market) | 1.1.0 | Market management, cost adders, county data, permit history |
 
 ## Installation
 
@@ -14,14 +14,14 @@ All packages are published to GitHub Packages. Configure npm to use the DripEdge
 
 ```bash
 # Add to your project's .npmrc
-@dripedge:registry=https://npm.pkg.github.com
+@jakeatknocked:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
 
 Then install packages:
 
 ```bash
-npm install @dripedge/market-service-sdk
+npm install @jakeatknocked/market-service-sdk
 ```
 
 ## Authentication
@@ -29,7 +29,7 @@ npm install @dripedge/market-service-sdk
 All SDKs require an **API key** for app-to-app authentication:
 
 ```typescript
-import { MarketServiceClient } from '@dripedge/market-service-sdk';
+import { MarketServiceClient } from '@jakeatknocked/market-service-sdk';
 
 const client = new MarketServiceClient({
   baseURL: process.env.MARKET_SERVICE_URL,
@@ -77,7 +77,7 @@ const client = new MarketServiceClient({
 Market management, pricing, and location-based features.
 
 ```typescript
-import { MarketServiceClient } from '@dripedge/market-service-sdk';
+import { MarketServiceClient } from '@jakeatknocked/market-service-sdk';
 
 // Look up market by location
 const result = await client.findMarketByZip(brandId, '80202');
@@ -96,7 +96,7 @@ const access = await client.checkPermitHistoryAccess(clientId);
 All SDKs include optional React hooks:
 
 ```tsx
-import { useMarkets, useSDKStatus } from '@dripedge/market-service-sdk';
+import { useMarkets, useSDKStatus } from '@jakeatknocked/market-service-sdk';
 
 function Dashboard({ client }) {
   const { updateAvailable } = useSDKStatus(client);
@@ -156,7 +156,7 @@ All SDKs follow [Semantic Versioning](https://semver.org/):
 ## Support
 
 - **Issues**: https://github.com/jakeatknocked/dripedge-sdk/issues
-- **Email**: support@dripedge.io
+- **Email**: support@jakeatknocked.io
 
 ## License
 

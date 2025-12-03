@@ -1,5 +1,5 @@
 {
-  "name": "@dripedge/market-service-sdk",
+  "name": "@jakeatknocked/market-service-sdk",
   "version": "1.1.0",
   "description": "TypeScript SDK for DripEdge Market Service API with version awareness and React hooks",
   "main": "dist/index.js",
