@@ -1,0 +1,125 @@
+name: Publish SDKs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'market/**'
+      # Add future SDKs here:
+      # - 'supply/**'
+      # - 'auth/**'
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to publish'
+        required: true
+        type: choice
+        options:
+          - market
+          # Add future SDKs here
+      version_bump:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      dry_run:
+        description: 'Dry run (skip actual publish)'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      market: ${{ steps.changes.outputs.market }}
+      # Add future SDKs here:
+      # supply: ${{ steps.changes.outputs.supply }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            market:
+              - 'market/**'
+
+  publish-market:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.market == 'true' || (github.event_name == 'workflow_dispatch' && inputs.package == 'market')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    defaults:
+      run:
+        working-directory: market
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@dripedge'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify build
+        run: |
+          echo "Checking build output..."
+          ls -la dist/
+          test -f dist/index.js || (echo "Missing dist/index.js" && exit 1)
+          test -f dist/index.d.ts || (echo "Missing dist/index.d.ts" && exit 1)
+          echo "Build verified"
+
+      - name: Bump version (manual trigger only)
+        if: github.event_name == 'workflow_dispatch' && !inputs.dry_run
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          npm version ${{ inputs.version_bump }} -m "chore(market): release %s"
+          git push
+          git push --tags
+
+      - name: Publish
+        if: ${{ !inputs.dry_run }}
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Dry run
+        if: ${{ inputs.dry_run }}
+        run: |
+          echo "=== DRY RUN ==="
+          npm pack --dry-run
+
+      - name: Summary
+        if: ${{ !inputs.dry_run }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "## @dripedge/market-service-sdk@$VERSION published" >> $GITHUB_STEP_SUMMARY
+
+  # Template for future SDKs:
+  # publish-supply:
+  #   needs: detect-changes
+  #   if: needs.detect-changes.outputs.supply == 'true' || (github.event_name == 'workflow_dispatch' && inputs.package == 'supply')
+  #   runs-on: ubuntu-latest
+  #   # ... same structure as publish-market
