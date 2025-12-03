@@ -1,0 +1,19 @@
+# Market Service SDK - npm Configuration
+#
+# Copy this file to .npmrc and replace YOUR_GITHUB_TOKEN with a valid token.
+# The token needs `read:packages` scope for installing the SDK.
+#
+# To generate a token:
+# 1. Go to https://github.com/settings/tokens
+# 2. Click "Generate new token (classic)"
+# 3. Select `read:packages` scope
+# 4. Copy the token
+
+# Registry for @dripedge scoped packages
+@dripedge:registry=https://npm.pkg.github.com
+
+# Authentication (replace with your token)
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+
+# Alternative: Use environment variable (recommended for CI/CD)
+# //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}

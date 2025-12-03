@@ -1,0 +1,73 @@
+{
+  "name": "@dripedge/market-service-sdk",
+  "version": "1.1.0",
+  "description": "TypeScript SDK for DripEdge Market Service API with version awareness and React hooks",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./react": {
+      "require": "./dist/react.js",
+      "import": "./dist/react.mjs",
+      "types": "./dist/react.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": [
+    "dripedge",
+    "market",
+    "sdk",
+    "typescript",
+    "roofing",
+    "county-data",
+    "permit-history"
+  ],
+  "author": "DripEdge Team",
+  "license": "ISC",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jakeatknocked/dripedge-sdk.git",
+    "directory": "market"
+  },
+  "bugs": {
+    "url": "https://github.com/jakeatknocked/dripedge-sdk/issues"
+  },
+  "homepage": "https://github.com/jakeatknocked/dripedge-sdk/tree/main/market#readme",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
