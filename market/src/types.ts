@@ -35,29 +35,74 @@ export interface SDKVersionStatus {
 export type VersionChangeCallback = (status: SDKVersionStatus) => void;
 
 /**
+ * Environment type for SDK configuration
+ */
+export type ServiceEnvironment = 'development' | 'staging' | 'production';
+
+/**
+ * Default service URLs by environment
+ * These can be overridden by providing a custom baseURL
+ */
+export const SERVICE_URLS: Record<ServiceEnvironment, string> = {
+  development: 'http://localhost:3002',
+  staging: 'https://market-service-staging.dripedge.io',
+  production: 'https://market-service.dripedge.io',
+};
+
+/**
  * SDK Configuration - required for initializing the client
  */
 export interface MarketServiceConfig {
-  /** Base URL of the Market Service API */
-  baseURL: string;
   /**
-   * App-to-app API key for authentication (REQUIRED for production)
+   * Environment to connect to.
+   * If provided, the SDK will use the default URL for that environment.
+   * Can be overridden by providing a custom baseURL.
+   *
+   * @example
+   * // Use environment (recommended)
+   * { environment: 'production', apiKey: 'mk_live_...' }
+   *
+   * // Or auto-detect from NODE_ENV
+   * { environment: process.env.NODE_ENV as ServiceEnvironment, apiKey: '...' }
+   */
+  environment?: ServiceEnvironment;
+
+  /**
+   * Custom base URL of the Market Service API.
+   * If provided, this overrides the environment-based URL.
+   *
+   * @example
+   * // Custom URL (for local development or custom deployments)
+   * { baseURL: 'http://localhost:3002', apiKey: '...' }
+   */
+  baseURL?: string;
+
+  /**
+   * App-to-app API key for authentication (REQUIRED)
    * This key identifies your application and should be kept secret.
    * Obtain from DripEdge admin portal or contact support.
+   *
+   * Key format:
+   * - Production: mk_live_... (use with environment: 'production')
+   * - Development/Staging: mk_test_... (use with environment: 'development' or 'staging')
    */
   apiKey: string;
+
   /**
    * Optional JWT token for user-level authentication
    * Used when making requests on behalf of a specific user
    */
   jwtToken?: string;
+
   /** Request timeout in milliseconds (default: 10000) */
   timeout?: number;
+
   /**
    * Optional client identifier for logging/analytics
    * e.g., 'prq-roof-cpq', 'dripedge-admin'
    */
   clientAppName?: string;
+
   /**
    * Callback invoked when SDK version status changes
    */

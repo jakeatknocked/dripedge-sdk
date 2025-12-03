@@ -34,11 +34,59 @@ import {
   TopCountyByPermits,
   FeatureAccessResult,
   MarketServiceError,
+  ServiceEnvironment,
+  SERVICE_URLS,
 } from './types';
 
 // SDK version - read from package.json at build time
 const SDK_VERSION = '1.1.0';
 const SDK_NAME = '@dripedge/market-service-sdk';
+
+/**
+ * Resolve the base URL from config
+ * Priority: baseURL > environment > default (development)
+ */
+function resolveBaseURL(config: MarketServiceConfig): string {
+  // Custom baseURL takes priority
+  if (config.baseURL) {
+    return config.baseURL;
+  }
+
+  // Use environment-based URL
+  const env = config.environment || 'development';
+  return SERVICE_URLS[env];
+}
+
+/**
+ * Detect environment from API key prefix
+ */
+function detectEnvironmentFromKey(apiKey: string): ServiceEnvironment {
+  if (apiKey.startsWith('mk_live_')) {
+    return 'production';
+  }
+  return 'development';
+}
+
+/**
+ * Warn if API key doesn't match environment
+ */
+function validateKeyEnvironment(apiKey: string, environment: ServiceEnvironment): void {
+  const keyEnv = detectEnvironmentFromKey(apiKey);
+
+  if (environment === 'production' && keyEnv !== 'production') {
+    console.warn(
+      '[MarketServiceSDK] Warning: Using test API key (mk_test_) in production environment. ' +
+      'Use a production key (mk_live_) for production.'
+    );
+  }
+
+  if (environment !== 'production' && keyEnv === 'production') {
+    console.warn(
+      '[MarketServiceSDK] Warning: Using production API key (mk_live_) in non-production environment. ' +
+      'Consider using a test key (mk_test_) for development/staging.'
+    );
+  }
+}
 
 export class MarketServiceClient {
   private client: AxiosInstance;
@@ -47,6 +95,12 @@ export class MarketServiceClient {
 
   /** Current SDK version status from the service */
   public versionStatus: SDKVersionStatus | null = null;
+
+  /** The resolved environment this client is connected to */
+  public readonly environment: ServiceEnvironment;
+
+  /** The resolved base URL this client is connected to */
+  public readonly baseURL: string;
 
   constructor(config: MarketServiceConfig) {
     // Validate required API key
@@ -59,14 +113,23 @@ export class MarketServiceClient {
 
     this.config = config;
 
+    // Resolve environment and URL
+    this.environment = config.environment || detectEnvironmentFromKey(config.apiKey);
+    this.baseURL = resolveBaseURL(config);
+
+    // Validate API key matches environment
+    validateKeyEnvironment(config.apiKey, this.environment);
+
     this.client = axios.create({
-      baseURL: config.baseURL,
+      baseURL: this.baseURL,
       timeout: config.timeout || 10000,
       headers: {
         'Content-Type': 'application/json',
         // SDK identification headers
         'X-SDK-Version': SDK_VERSION,
         'X-SDK-Name': SDK_NAME,
+        // Environment header (for service-side logging/routing)
+        'X-Environment': this.environment,
         // App-to-app authentication (required)
         'X-API-Key': config.apiKey,
         // Client app identification (optional, for analytics)
